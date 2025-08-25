@@ -1,0 +1,16 @@
+{
+  "roomName": "104",
+  "type": "Double",
+  "accessible": true,
+  "description": "Luxury double room with city view",
+  "image": "https://example.com/room1.jpg",
+  "roomPrice": "100",
+  "features": [
+    "WiFi",
+    "TV",
+    "Radio",
+    "Refreshments",
+    "Safe",
+    "Views"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "roomid": 1,
+  "firstname": "John",
+  "lastname": "Doe",
+  "depositpaid": false,
+  "bookingdates": {
+    "checkin": "2025-07-20",
+    "checkout": "2025-07-30"
+  },
+  "email": "john.doe@example.com",
+  "phone": "345234234566",
+  "totalprice": 233
+}
