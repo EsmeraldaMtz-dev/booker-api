@@ -1,6 +1,9 @@
 package tests;
 
 import base.BaseApiTest;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import org.testng.ITestContext;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -8,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 public class RoomManagementTests extends BaseApiTest {
@@ -37,14 +41,16 @@ public class RoomManagementTests extends BaseApiTest {
     }
 
     @Test
-    public void createNewRoom() throws IOException {
+    public void createNewRoom( ITestContext context) throws IOException {
         String requestBody = Files.readString(Paths.get("src/test/resources/newRoom.json"));
         given()
+                .log().all()
                 .body(requestBody)
                 .when()
                 .post("room")
                 .then()
                 .log().all()
-                .statusCode(201);
+                .statusCode(200)
+                .body("success", equalTo(true));
     }
 }

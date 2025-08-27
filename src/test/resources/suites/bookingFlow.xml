@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite" verbose="1">
+    <test name="Booking Flow">
+        <classes>
+            <class name="tests.RoomManagementTests">
+                <methods>
+                    <include name="createNewRoom"/>
+                </methods>
+            </class>
+            <!--class name="tests.RoomManagementTests">
+                <methods>
+                    <include name="createNewRoom"/>
+                </methods>
+            </class-->
+            <class name="tests.BookingTests">
+                <methods>
+                    <include name="createBooking"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

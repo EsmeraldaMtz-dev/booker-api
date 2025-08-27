@@ -3,6 +3,7 @@ package base;
 import helpers.models.Login;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.testng.annotations.*;
@@ -14,27 +15,22 @@ import static io.restassured.RestAssured.given;
 public class BaseApiTest {
 
 
-    public String token;
-    public LocalDateTime tokenExpiration;
-    public RequestSpecBuilder requestSpecBuilder;
+    public static String token;
+    public static LocalDateTime tokenExpiration;
 
-    @BeforeSuite
+    @BeforeSuite(alwaysRun = true)
     public void setup() {
         RestAssured.baseURI = "https://automationintesting.online/api";
-        requestSpecBuilder= new RequestSpecBuilder();
-        requestSpecBuilder.addHeader("x-api-key", "reqres-free-v1");
-        requestSpecBuilder.addHeader("Content-Type", "application/json");
-
-        RestAssured.requestSpecification = requestSpecBuilder.build();
         this.generateToken();
     }
 
     public void generateToken (){
         Login loginPO = new Login("admin", "password");
-        Response response = given()
+        Response response = RestAssured
+                .given()
+                .contentType(ContentType.JSON)
                 .body(loginPO)
                 .when()
-                .log().all() //Request Info
                 .post("/auth/login")
                 .then()
                 .statusCode(200)
@@ -48,10 +44,16 @@ public class BaseApiTest {
         tokenExpiration = LocalDateTime.now().plusHours(1);
 
     }
-    @BeforeMethod
+
+    @BeforeClass(alwaysRun = true)
     public void settingUpAuthConfig() {
-        if(LocalDateTime.now().isAfter(tokenExpiration.minusMinutes(5))) generateToken();
-        requestSpecBuilder.addHeader("Authorization", "Bearer " + token);
-        RestAssured.requestSpecification =requestSpecBuilder.build();
+        if(LocalDateTime.now().isAfter(tokenExpiration.minusMinutes(5))){
+            generateToken();
+        }
+
+        RestAssured.requestSpecification = new RequestSpecBuilder()
+                .addHeader("Content-Type", "application/json")
+                .addCookie("token", token)
+                .build();
     }
 }

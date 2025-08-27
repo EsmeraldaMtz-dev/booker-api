@@ -3,9 +3,12 @@ package tests;
 import base.BaseApiTest;
 import helpers.models.Booking;
 import org.hamcrest.Matcher;
+import org.testng.Assert;
+import org.testng.ITestContext;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -15,10 +18,14 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class BookingTests extends BaseApiTest {
 
-    @Test
-    public void createBooking() throws IOException {
-        //Booking bookingModel = new Booking();
-        String requestBody = Files.readString(Paths.get("src/test/resources/bookingTest.json"));
+    @Test(dependsOnMethods = "tests.RoomManagementTests.createNewRoom")
+    public void createBooking(ITestContext context) throws IOException {
+        Integer roomId = (Integer) context.getAttribute("createdRoomId");
+        Assert.assertNotNull(roomId, "Room Id not found in context");
+        byte[] encoded = Files.readAllBytes(Paths.get("src/test/resources/bookingTest.json"));
+        String requestBodyTemplate = new String(encoded, StandardCharsets.UTF_8);
+        String requestBody = requestBodyTemplate.replace("{{roomid}}", String.valueOf(roomId));
+
         given()
                 .body(requestBody)
                 .when()
